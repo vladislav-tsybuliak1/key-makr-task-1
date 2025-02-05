@@ -1,6 +1,8 @@
 import asyncio
+import csv
 import logging
 
+import aiofiles
 import aiohttp
 import aiosqlite
 
@@ -14,6 +16,7 @@ logging.basicConfig(
 
 
 DB_FILE = "posts.db"
+CSV_FILE = "posts.csv"
 API_URL = "https://jsonplaceholder.typicode.com/posts"
 
 
@@ -64,7 +67,19 @@ async def save_to_db(queue: asyncio.Queue) -> None:
             post = await queue.get()
             await db.execute("INSERT INTO posts VALUES (?, ?, ?, ?)", post)
         await db.commit()
-    logging.info("Saved posts to db")
+    logging.info(f"Saved posts to {DB_FILE}")
+
+
+async def save_to_csv(queue: asyncio.Queue) -> None:
+    async with aiofiles.open(CSV_FILE, "w", encoding="utf-8") as csv_file:
+        fieldnames = ["id", "user_id", "title", "body"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        while not queue.empty():
+            post = await queue.get()
+            await writer.writerow(post)
+    logging.info(f"Exported data to {CSV_FILE}")
 
 
 async def main() -> None:
