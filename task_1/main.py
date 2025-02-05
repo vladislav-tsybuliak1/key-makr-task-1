@@ -1,3 +1,5 @@
+import asyncio
+
 import aiosqlite
 
 from task_1 import settings
@@ -16,3 +18,11 @@ async def setup_db() -> None:
             """
         )
         await db.commit()
+
+
+async def main() -> None:
+    await setup_db()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
