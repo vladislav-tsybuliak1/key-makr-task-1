@@ -2,7 +2,14 @@ import asyncio
 
 import aiosqlite
 
-from task_1 import settings
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="requests.log",
+    filemode="a",
+)
+
 
 DB_FILE = "posts.db"
 
