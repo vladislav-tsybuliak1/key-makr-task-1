@@ -58,6 +58,15 @@ async def fetch_all_posts() -> asyncio.Queue:
     return queue
 
 
+async def save_to_db(queue: asyncio.Queue) -> None:
+    async with aiosqlite.connect(DB_FILE) as db:
+        while not queue.empty():
+            post = await queue.get()
+            await db.execute("INSERT INTO posts VALUES (?, ?, ?, ?)", post)
+        await db.commit()
+    logging.info("Saved posts to db")
+
+
 async def main() -> None:
     await setup_db()
 
