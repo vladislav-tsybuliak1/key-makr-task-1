@@ -1,5 +1,16 @@
 import collections
+import logging
 import re
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(filename="log_analyzer.log", mode="a"),
+        logging.StreamHandler(),
+    ],
+)
 
 LOG_PATTERN = re.compile(
     r'(?P<ip>\d+\.\d+\.\d+\.\d+) - - \[(?P<datetime>.*?)] "(?P<method>\w+) (?P<url>.*?) (?P<protocol>HTTP/\d\.\d)" (?P<status>\d+) (?P<size>\d+)'
