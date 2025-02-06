@@ -36,3 +36,15 @@ def analyze_log(log_file):
         status_counter[log["status"]] += 1
         total_size += int(log["size"])
         logs_count += 1
+
+    logging.info("Counting top 5 IP addresses with the most requests:")
+    for ip, num in ip_counter.most_common(5):
+        logging.info(f"{ip}: {num} requests")
+
+
+def main() -> None:
+    analyze_log("fake_logs.log")
+
+
+if __name__ == "__main__":
+    main()
