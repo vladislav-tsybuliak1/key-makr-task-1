@@ -88,6 +88,8 @@ def convert_xml_to_json(input_dir, output_dir) -> None:
                 logging.info(f"Validation failed for: {file}.")
 
         except ET.ParseError:
-            logging.info(f"Error parsing XML: {file}")
             logging.info(f"Error parsing XML: {file}.")
+
+    if not os.listdir(output_dir):
+        os.removedirs(output_dir)
 
