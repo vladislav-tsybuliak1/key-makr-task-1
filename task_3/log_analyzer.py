@@ -41,6 +41,12 @@ def analyze_log(log_file):
     for ip, num in ip_counter.most_common(5):
         logging.info(f"{ip}: {num} requests")
 
+    logging.info("Counting most frequent errors:")
+    for status, num in status_counter.most_common(10):
+        if status.startswith("4") or status.startswith("5"):
+            logging.info(f"{status}: {num} occurrences")
+
+
 
 def main() -> None:
     analyze_log("fake_logs.log")
