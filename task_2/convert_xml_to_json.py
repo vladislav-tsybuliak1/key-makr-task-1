@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 import os
@@ -93,3 +94,25 @@ def convert_xml_to_json(input_dir, output_dir) -> None:
     if not os.listdir(output_dir):
         os.removedirs(output_dir)
 
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Convert XML product files to JSON",
+    )
+    parser.add_argument(
+        "--input-dir",
+        required=True,
+        help="Directory containing XML files",
+    )
+    parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory to save JSON files",
+    )
+
+    args = parser.parse_args()
+    convert_xml_to_json(args.input_dir, args.output_dir)
+
+
+if __name__ == "__main__":
+    main()
