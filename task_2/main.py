@@ -1,4 +1,7 @@
+import json
 import logging
+import os
+import xml.etree.ElementTree as ET
 
 
 logging.basicConfig(
@@ -52,3 +55,31 @@ def validate_product(data: dict) -> bool:
         return False
 
     return True
+
+
+def convert_xml_to_json(input_dir, output_dir) -> None:
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for file in os.listdir(input_dir):
+        if not file.endswith(".xml"):
+            break
+
+        xml_path = os.path.join(input_dir, file)
+        json_path = os.path.join(output_dir, file.replace(".xml", ".json"))
+
+        try:
+            tree = ET.parse(xml_path)
+            root = tree.getroot()
+
+            product_data = {child.tag: child.text for child in root}
+
+            if validate_product(product_data):
+                with open(json_path, "w", encoding="utf-8") as json_file:
+                    json.dump(product_data, json_file, indent=2)
+                logging.info(f"Converted: {file} to {json_path}")
+            else:
+                logging.info(f"Validation failed for: {file}")
+
+        except ET.ParseError:
+            logging.info(f"Error parsing XML: {file}")
