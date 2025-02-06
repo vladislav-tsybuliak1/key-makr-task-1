@@ -1,6 +1,7 @@
 import argparse
 import collections
 import logging
+import os.path
 import re
 import sys
 
@@ -28,6 +29,10 @@ def parse_log(file_path):
 
 
 def analyze_log(log_file):
+    if not os.path.exists(log_file):
+        logging.error(f"File '{log_file}' does not exist")
+        return
+
     ip_counter = collections.Counter()
     status_counter = collections.Counter()
     total_size = 0
