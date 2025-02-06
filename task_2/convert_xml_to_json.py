@@ -60,6 +60,10 @@ def validate_product(data: dict) -> bool:
 
 
 def convert_xml_to_json(input_dir, output_dir) -> None:
+    if not os.path.exists(input_dir):
+        logging.warning(f"Directory {input_dir} does not exist.")
+        return
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
