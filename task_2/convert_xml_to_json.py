@@ -83,9 +83,11 @@ def convert_xml_to_json(input_dir, output_dir) -> None:
             if validate_product(product_data):
                 with open(json_path, "w", encoding="utf-8") as json_file:
                     json.dump(product_data, json_file, indent=2)
-                logging.info(f"Converted: {file} to {json_path}")
+                logging.info(f"Converted: {file} to {json_path}.")
             else:
-                logging.info(f"Validation failed for: {file}")
+                logging.info(f"Validation failed for: {file}.")
 
         except ET.ParseError:
             logging.info(f"Error parsing XML: {file}")
+            logging.info(f"Error parsing XML: {file}.")
+
