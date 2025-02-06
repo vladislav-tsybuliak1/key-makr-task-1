@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import os
+import sys
 import xml.etree.ElementTree as ET
 
 
@@ -10,7 +11,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(filename="converting_xml_to_json.log", mode="a"),
-        logging.StreamHandler(),
+        logging.StreamHandler(stream=sys.stdout),
     ],
 )
 
