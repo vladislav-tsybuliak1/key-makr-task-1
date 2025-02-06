@@ -1,7 +1,9 @@
+import argparse
 import collections
 import logging
 import re
 import sys
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,7 +53,13 @@ def analyze_log(log_file):
 
 
 def main() -> None:
-    analyze_log("fake_logs.log")
+    parser = argparse.ArgumentParser(description="Analyze Nginx log files")
+    parser.add_argument(
+        "logfile",
+        help="Path to the log file",
+    )
+    args = parser.parse_args()
+    analyze_log(args.logfile)
 
 
 if __name__ == "__main__":
