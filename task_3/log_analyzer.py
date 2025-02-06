@@ -46,6 +46,8 @@ def analyze_log(log_file):
         if status.startswith("4") or status.startswith("5"):
             logging.info(f"{status}: {num} occurrences")
 
+    avg_size = total_size / logs_count if logs_count > 0 else 0
+    logging.info(f"Average response size: {round(avg_size, 2)}")
 
 
 def main() -> None:
