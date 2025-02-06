@@ -37,12 +37,18 @@ def validate_product(data: dict) -> bool:
 
         if not isinstance(data["name"], str) or not data["name"].strip():
             logging.error(
-                f"Invalid name ({data['name']}): Must be a non-empty string.",
+                f"Invalid product name '{data['name']}': Must be a non-empty string.",
             )
             return False
 
-    except TypeError as e:
-        logging.error(f"Type error in product {data}: {e}")
+        if not isinstance(data["category"], str) or not data["category"].strip():
+            logging.error(
+                f"Invalid product category '{data['category']}': Must be a non-empty string.",
+            )
+            return False
+
+    except (ValueError, TypeError) as e:
+        logging.error(f"Error in product {data}: {e}")
         return False
 
     return True
