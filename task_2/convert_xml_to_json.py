@@ -7,8 +7,10 @@ import xml.etree.ElementTree as ET
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    filename="converting_xml.log",
-    filemode="a",
+    handlers=[
+        logging.FileHandler(filename="converting_xml_to_json.log", mode="a"),
+        logging.StreamHandler(),
+    ],
 )
 
 
