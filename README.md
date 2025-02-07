@@ -38,3 +38,22 @@ Run the script and convert .xml files to .json:
 
 1) **Converted JSON Files**: Stored in the specified output directory
 2) **Log (converting_xml_to_json.log)**: Logs information about the conversion process, validation errors, and file operations.
+
+
+## Task 3: Nginx log analyzer
+
+### Description
+
+It is a script for analyzing web server logs in Nginx format.
+The scripy identifies key metrics such as top IPs by request count, most frequent errors, and average response sizes.
+
+### Usage
+
+Run the script and analyze log file:
+
+`python scripts/log_analyzer.py path/to/access.log`
+
+#### Output
+
+1) **Analysis Results**: Displayed in the console.
+2) **Log (log_analyzer.log)**: Records information about the analysis process.
