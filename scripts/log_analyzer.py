@@ -6,6 +6,9 @@ import re
 import sys
 
 
+FILES_DIR = "scripts/log_analyzer_files"
+
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -20,7 +23,7 @@ LOG_PATTERN = re.compile(
 )
 
 
-def parse_log(file_path):
+def parse_log(file_path: str) -> dict:
     with open(file_path, "r") as file:
         for line in file:
             match = LOG_PATTERN.match(line)
@@ -28,7 +31,7 @@ def parse_log(file_path):
                 yield match.groupdict()
 
 
-def analyze_log(log_file):
+def analyze_log(log_file) -> None:
     if not os.path.exists(log_file):
         logging.error(f"File '{log_file}' does not exist")
         return
@@ -43,6 +46,10 @@ def analyze_log(log_file):
         status_counter[log["status"]] += 1
         total_size += int(log["size"])
         logs_count += 1
+
+    if logs_count == 0:
+        logging.error("Log file is empty or contains no valid entries")
+        return
 
     logging.info("Counting top 5 IP addresses with the most requests:")
     for ip, num in ip_counter.most_common(5):
