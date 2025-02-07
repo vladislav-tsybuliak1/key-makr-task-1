@@ -117,8 +117,29 @@ def delete_task(task_id: int) -> None:
     logging.info(f"Task '{title}' deleted successfully")
 
 
+def list_tasks(status=None) -> None:
+    with sqlite3.connect(DB_FILE) as db:
+        cursor = db.cursor()
+        query = "SELECT id, title, description, due_date, status FROM tasks"
+        params = []
+
+        if status:
+            query += " WHERE status = ?"
+            params.append(status)
+
+        query += " ORDER BY due_date"
+        cursor.execute(query, params)
+        tasks = cursor.fetchall()
+
+    for task in tasks:
+        logging.info(
+            f"ID: {task[0]}, Title: {task[1]}, Due: {task[3]}, Status: {task[4]}, Description: {task[2]}"
+        )
+
+
 if __name__ == "__main__":
     setup_db()
     # add_task(title="some", due_date="2024-12-14 12:00", description="wer")
-    # update_task_status(1, "completed")
-    delete_task(2)
+    update_task_status(4, "completed")
+    # delete_task(2)
+    list_tasks('completed')
