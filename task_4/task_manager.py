@@ -1,3 +1,4 @@
+import argparse
 import logging
 import sqlite3
 import sys
@@ -33,7 +34,7 @@ def setup_db() -> None:
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title VARCHAR(255) NOT NULL,
-                description TEXT,
+                description TEXT NOT NULL,
                 due_date DATETIME NOT NULL,
                 status TEXT CHECK(status IN {TASK_STATUSES}) NOT NULL DEFAULT 'pending'
             )
@@ -42,13 +43,17 @@ def setup_db() -> None:
         db.commit()
 
 
-def validate_task(title: str, due_date: str) -> bool:
+def validate_task(title: str, description: str, due_date: str) -> bool:
     if not title.strip():
         logging.error("Title cannot be empty")
         return False
 
     if len(title.strip()) > 255:
         logging.error("Title should contain maximum 255 symbols")
+        return False
+
+    if not description.strip():
+        logging.error("Description cannot be empty")
         return False
 
     try:
@@ -60,8 +65,8 @@ def validate_task(title: str, due_date: str) -> bool:
     return True
 
 
-def add_task(title: str, due_date: str, description: str = None) -> None:
-    if not validate_task(title, due_date):
+def add_task(title: str, description: str, due_date: str) -> None:
+    if not validate_task(title, description, due_date):
         logging.error(f"Task '{title}' not added")
         return
 
@@ -137,9 +142,42 @@ def list_tasks(status=None) -> None:
         )
 
 
-if __name__ == "__main__":
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Task Manager CLI")
+    parser.add_argument(
+        "--add",
+        nargs=3,
+        metavar=("TITLE", "DESCRIPTION", "DUE_DATE"),
+        help="Add a new task",
+    )
+    parser.add_argument(
+        "--update",
+        nargs=2,
+        metavar=("ID", "STATUS"),
+        help="Update task status",
+    )
+    parser.add_argument("--delete", metavar="ID", help="Delete a task")
+    parser.add_argument("--list", action="store_true", help="List all tasks")
+    parser.add_argument(
+        "--filter-status",
+        metavar="STATUS",
+        help="Filter tasks by status",
+    )
+
+    args = parser.parse_args()
     setup_db()
-    # add_task(title="some", due_date="2024-12-14 12:00", description="wer")
-    update_task_status(4, "completed")
-    # delete_task(2)
-    list_tasks('completed')
+
+    if args.add:
+        add_task(*args.add)
+    elif args.update:
+        update_task_status(args.update[0], args.update[1])
+    elif args.delete:
+        delete_task(args.delete)
+    elif args.list:
+        list_tasks(args.filter_status)
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()

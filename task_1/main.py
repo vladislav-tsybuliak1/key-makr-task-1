@@ -26,9 +26,9 @@ async def setup_db() -> None:
             """
             CREATE TABLE IF NOT EXISTS posts (
                 id INTEGER PRIMARY KEY,
-                user_id INTEGER,
-                title TEXT,
-                body TEXT
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                body TEXT NOT NULL
             )
             """
         )
