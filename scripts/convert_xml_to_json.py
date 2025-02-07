@@ -35,25 +35,25 @@ def validate_product(data: dict) -> bool:
 
         if product_id <= 0:
             logging.error(
-                f"Invalid ID ({product_id}): Must be a positive integer.",
+                f"Invalid ID ({product_id}): Must be a positive integer",
             )
             return False
 
         if price <= 0:
             logging.error(
-                f"Invalid price ({price}): Must be a positive number.",
+                f"Invalid price ({price}): Must be a positive number",
             )
             return False
 
         if not isinstance(data["name"], str) or not data["name"].strip():
             logging.error(
-                f"Invalid product name '{data['name']}': Must be a non-empty string.",
+                f"Invalid product name '{data['name']}': Must be a non-empty string",
             )
             return False
 
         if not isinstance(data["category"], str) or not data["category"].strip():
             logging.error(
-                f"Invalid product category '{data['category']}': Must be a non-empty string.",
+                f"Invalid product category '{data['category']}': Must be a non-empty string",
             )
             return False
 
@@ -66,7 +66,7 @@ def validate_product(data: dict) -> bool:
 
 def convert_xml_to_json(input_dir, output_dir) -> None:
     if not os.path.exists(input_dir):
-        logging.warning(f"Directory {input_dir} does not exist.")
+        logging.warning(f"Directory {input_dir} does not exist")
         return
 
     if not os.path.exists(output_dir):
@@ -74,7 +74,7 @@ def convert_xml_to_json(input_dir, output_dir) -> None:
 
     for file in os.listdir(input_dir):
         if not file.endswith(".xml"):
-            break
+            continue
 
         xml_path = os.path.join(input_dir, file)
         json_path = os.path.join(output_dir, file.replace(".xml", ".json"))
@@ -88,12 +88,12 @@ def convert_xml_to_json(input_dir, output_dir) -> None:
             if validate_product(product_data):
                 with open(json_path, "w", encoding="utf-8") as json_file:
                     json.dump(product_data, json_file, indent=2)
-                logging.info(f"Converted: {file} to {json_path}.")
+                logging.info(f"Converted: {file} to {json_path}")
             else:
-                logging.info(f"Validation failed for: {file}.")
+                logging.info(f"Validation failed for: {file}")
 
         except ET.ParseError:
-            logging.info(f"Error parsing XML: {file}.")
+            logging.info(f"Error parsing XML: {file}")
 
     if not os.listdir(output_dir):
         os.removedirs(output_dir)
