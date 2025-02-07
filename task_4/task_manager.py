@@ -17,9 +17,9 @@ logging.basicConfig(
 DB_FILE = "tasks.db"
 
 
-
 def adapt_datetime(dt):
     return dt.isoformat()
+
 
 sqlite3.register_adapter(datetime, adapt_datetime)
 
@@ -37,6 +37,7 @@ def setup_db() -> None:
             )
             """
         )
+        db.commit()
 
 
 def add_task(title: str, due_date: datetime, description: str = None) -> None:
@@ -45,6 +46,9 @@ def add_task(title: str, due_date: datetime, description: str = None) -> None:
             "INSERT INTO tasks (title, description, due_date) VALUES (?, ?, ?)",
             (title, description, due_date),
         )
+        db.commit()
+    logging.info(f"Task '{title}' added successfully")
+
 
 
 if __name__ == "__main__":
