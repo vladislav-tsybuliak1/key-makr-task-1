@@ -40,7 +40,29 @@ def setup_db() -> None:
         db.commit()
 
 
-def add_task(title: str, due_date: datetime, description: str = None) -> None:
+def validate_task(title: str, due_date: str) -> bool:
+    if not title.strip():
+        logging.error("Title cannot be empty")
+        return False
+
+    if len(title.strip()) > 255:
+        logging.error("Title should contain maximum 255 symbols")
+        return False
+
+    try:
+        datetime.strptime(due_date, "%Y-%m-%d %H:%M")
+    except ValueError:
+        logging.error("Invalid due date format. Use 'YYYY-MM-DD HH:MM'")
+        return False
+
+    return True
+
+
+def add_task(title: str, due_date: str, description: str = None) -> None:
+    if not validate_task(title, due_date):
+        logging.error(f"Task '{title}' not added")
+        return
+
     with sqlite3.connect(DB_FILE) as db:
         db.execute(
             "INSERT INTO tasks (title, description, due_date) VALUES (?, ?, ?)",
