@@ -97,7 +97,28 @@ def update_task_status(task_id: int, status: str) -> None:
     logging.info(f"Task '{task_title}' was updated from '{prev_status}' to '{status}'")
 
 
+def delete_task(task_id: int) -> None:
+    with sqlite3.connect(DB_FILE) as db:
+        cursor = db.cursor()
+        cursor.execute(
+            "SELECT title FROM tasks WHERE id = ?",
+            (task_id,),
+        )
+        task = cursor.fetchone()
+
+        if not task:
+            logging.error(f"Task ID {task_id} not found")
+            return
+
+        title = task[0]
+
+        cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+        db.commit()
+    logging.info(f"Task '{title}' deleted successfully")
+
+
 if __name__ == "__main__":
     setup_db()
     # add_task(title="some", due_date="2024-12-14 12:00", description="wer")
-    update_task_status(1, "completed")
+    # update_task_status(1, "completed")
+    delete_task(2)
