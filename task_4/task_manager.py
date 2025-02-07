@@ -16,6 +16,8 @@ logging.basicConfig(
 
 DB_FILE = "tasks.db"
 
+TASK_STATUSES = ("pending", "in_progress", "completed")
+
 
 def adapt_datetime(dt):
     return dt.isoformat()
@@ -27,13 +29,13 @@ sqlite3.register_adapter(datetime, adapt_datetime)
 def setup_db() -> None:
     with sqlite3.connect(DB_FILE) as db:
         db.execute(
-            """
+            f"""
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 due_date DATETIME NOT NULL,
-                status TEXT CHECK(status IN ('pending', 'in_progress', 'completed')) NOT NULL DEFAULT 'pending'
+                status TEXT CHECK(status IN {TASK_STATUSES}) NOT NULL DEFAULT 'pending'
             )
             """
         )
@@ -72,7 +74,30 @@ def add_task(title: str, due_date: str, description: str = None) -> None:
     logging.info(f"Task '{title}' added successfully")
 
 
+def update_task_status(task_id: int, status: str) -> None:
+    if status not in TASK_STATUSES:
+        logging.error(f"Status must be one of the following: {TASK_STATUSES}")
+        return
+
+    with sqlite3.connect(DB_FILE) as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT title, status FROM tasks WHERE id = ?", (task_id,))
+        task = cursor.fetchone()
+
+        if not task:
+            logging.error(f"Task ID {task_id} not found")
+            return
+
+        task_title = task[0]
+        prev_status = task[1]
+
+        cursor.execute("UPDATE tasks SET status = ? WHERE id = ?", (status, task_id))
+        db.commit()
+
+    logging.info(f"Task '{task_title}' was updated from '{prev_status}' to '{status}'")
+
 
 if __name__ == "__main__":
     setup_db()
-    add_task(title="Title", due_date=datetime(2023, 12, 31, 12))
+    # add_task(title="some", due_date="2024-12-14 12:00", description="wer")
+    update_task_status(1, "completed")
