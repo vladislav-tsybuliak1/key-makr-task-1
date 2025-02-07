@@ -1,22 +1,29 @@
 import asyncio
 import csv
 import logging
+import os
+import sys
 
 import aiofiles
 import aiohttp
 import aiosqlite
 
 
+FILES_DIR = "scripts/fetch_posts_files"
+
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    filename="requests.log",
-    filemode="a",
+    handlers=[
+        logging.FileHandler(filename=f"{FILES_DIR}/requests.log", mode="a"),
+        logging.StreamHandler(stream=sys.stdout),
+    ],
 )
 
 
-DB_FILE = "posts.db"
-CSV_FILE = "posts.csv"
+DB_FILE = f"{FILES_DIR}/posts.db"
+CSV_FILE = f"{FILES_DIR}/posts.csv"
 API_URL = "https://jsonplaceholder.typicode.com/posts"
 
 
@@ -77,14 +84,16 @@ async def save_to_db(queue: asyncio.Queue) -> None:
         while not queue.empty():
             post = await queue.get()
             await db.execute("INSERT INTO posts VALUES (?, ?, ?, ?)", post)
-        await db.commit()
+            await db.commit()
     logging.info(f"Saved posts to {DB_FILE}")
 
 
 async def save_to_csv(queue: asyncio.Queue) -> None:
+    file_exists = os.path.exists(CSV_FILE)
     async with aiofiles.open(CSV_FILE, "a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        await writer.writerow(["id", "user_id", "title", "body"])
+        if not file_exists:
+            await writer.writerow(["id", "user_id", "title", "body"])
         while not queue.empty():
             post = await queue.get()
             await writer.writerow(post)
