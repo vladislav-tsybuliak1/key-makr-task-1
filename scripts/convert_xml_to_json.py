@@ -6,11 +6,14 @@ import sys
 import xml.etree.ElementTree as ET
 
 
+FILES_DIR = "scripts/convert_xml_to_json_files"
+
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(filename="converting_xml_to_json.log", mode="a"),
+        logging.FileHandler(filename=f"{FILES_DIR}/converting_xml_to_json.log", mode="a"),
         logging.StreamHandler(stream=sys.stdout),
     ],
 )
