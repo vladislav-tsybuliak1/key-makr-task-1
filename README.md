@@ -57,3 +57,9 @@ Run the script and analyze log file:
 
 1) **Analysis Results**: Displayed in the console.
 2) **Log (log_analyzer.log)**: Records information about the analysis process.
+
+#### Key Metrics Extracted
+
+1) Top 5 IP Addresses: Ranked by the number of requests.
+2) Most Frequent Errors: 4xx and 5xx status codes.
+3) Average Response Size: Calculated across all requests.
