@@ -12,7 +12,9 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(filename=f"{FILES_DIR}/task_manager.log", mode="a"),
+        logging.FileHandler(
+            filename=f"{FILES_DIR}/task_manager.log", mode="a"
+        ),
         logging.StreamHandler(stream=sys.stdout),
     ],
 )
@@ -89,7 +91,10 @@ def update_task_status(task_id: int, status: str) -> None:
 
     with sqlite3.connect(DB_FILE) as db:
         cursor = db.cursor()
-        cursor.execute("SELECT title, status FROM tasks WHERE id = ?", (task_id,))
+        cursor.execute(
+            "SELECT title, status FROM tasks WHERE id = ?",
+            (task_id,),
+        )
         task = cursor.fetchone()
 
         if not task:
@@ -99,10 +104,15 @@ def update_task_status(task_id: int, status: str) -> None:
         task_title = task[0]
         prev_status = task[1]
 
-        cursor.execute("UPDATE tasks SET status = ? WHERE id = ?", (status, task_id))
+        cursor.execute(
+            "UPDATE tasks SET status = ? WHERE id = ?",
+            (status, task_id),
+        )
         db.commit()
 
-    logging.info(f"Task '{task_title}' was updated from '{prev_status}' to '{status}'")
+    logging.info(
+        f"Task '{task_title}' was updated from '{prev_status}' to '{status}'"
+    )
 
 
 def delete_task(task_id: int) -> None:
@@ -141,7 +151,8 @@ def list_tasks(status=None) -> None:
 
     for task in tasks:
         logging.info(
-            f"ID: {task[0]}, Title: {task[1]}, Due: {task[3]}, Status: {task[4]}, Description: {task[2]}"
+            f"ID: {task[0]}, Title: {task[1]}, Due: {task[3]}, "
+            f"Status: {task[4]}, Description: {task[2]}"
         )
 
 

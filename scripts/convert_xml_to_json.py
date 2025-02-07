@@ -13,7 +13,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(filename=f"{FILES_DIR}/converting_xml_to_json.log", mode="a"),
+        logging.FileHandler(
+            filename=f"{FILES_DIR}/converting_xml_to_json.log",
+            mode="a",
+        ),
         logging.StreamHandler(stream=sys.stdout),
     ],
 )
@@ -47,13 +50,18 @@ def validate_product(data: dict) -> bool:
 
         if not isinstance(data["name"], str) or not data["name"].strip():
             logging.error(
-                f"Invalid product name '{data['name']}': Must be a non-empty string",
+                f"Invalid product name '{data['name']}': "
+                f"Must be a non-empty string",
             )
             return False
 
-        if not isinstance(data["category"], str) or not data["category"].strip():
+        if (
+            not isinstance(data["category"], str)
+            or not data["category"].strip()
+        ):
             logging.error(
-                f"Invalid product category '{data['category']}': Must be a non-empty string",
+                f"Invalid product category '{data['category']}': "
+                f"Must be a non-empty string",
             )
             return False
 

@@ -53,11 +53,18 @@ async def fetch_post(
             logging.info(f"Fetching post {post_id}: Status {response.status}")
             if response.status == 200:
                 data = await response.json()
-                post = (data["id"], data["userId"], data["title"], data["body"])
+                post = (
+                    data["id"],
+                    data["userId"],
+                    data["title"],
+                    data["body"],
+                )
                 await db_queue.put(post)
                 await csv_queue.put(post)
             else:
-                logging.error(f"Error {response.status} fetching post {post_id}")
+                logging.error(
+                    f"Error {response.status} fetching post {post_id}"
+                )
     except Exception as e:
         logging.error(f"Exception fetching post {post_id}: {e}")
 
@@ -90,7 +97,9 @@ async def save_to_db(queue: asyncio.Queue) -> None:
 
 async def save_to_csv(queue: asyncio.Queue) -> None:
     file_exists = os.path.exists(CSV_FILE)
-    async with aiofiles.open(CSV_FILE, "a", newline="", encoding="utf-8") as file:
+    async with aiofiles.open(
+        CSV_FILE, "a", newline="", encoding="utf-8"
+    ) as file:
         writer = csv.writer(file)
         if not file_exists:
             await writer.writerow(["id", "user_id", "title", "body"])
