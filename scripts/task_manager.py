@@ -9,13 +9,13 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(filename="task_manager.log", mode="a"),
+        logging.FileHandler(filename="task_4/task_manager.log", mode="a"),
         logging.StreamHandler(stream=sys.stdout),
     ],
 )
 
 
-DB_FILE = "tasks.db"
+DB_FILE = "task_4/tasks.db"
 
 TASK_STATUSES = ("pending", "in_progress", "completed")
 
