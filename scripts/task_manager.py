@@ -5,17 +5,20 @@ import sys
 from datetime import datetime
 
 
+FILES_DIR = "scripts/task_manager_files"
+
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(filename="task_4/task_manager.log", mode="a"),
+        logging.FileHandler(filename=f"{FILES_DIR}/task_manager.log", mode="a"),
         logging.StreamHandler(stream=sys.stdout),
     ],
 )
 
 
-DB_FILE = "task_4/tasks.db"
+DB_FILE = f"{FILES_DIR}/tasks.db"
 
 TASK_STATUSES = ("pending", "in_progress", "completed")
 
